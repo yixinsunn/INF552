@@ -1,12 +1,12 @@
 clear;clc;close all;clf;
 
 %% Load variables
-% load optimal parameters given by MultiLayer_BP.m
-load('optimal_parameters_4_cost0.01.mat');
+addpath('..\Wall-Following_Robot_Navigation');
+
+% load neural network output weights given by multilayer_neural_network.m
+opt_weights = load('output_weights_4.mat');
 % load a simple map graph
 load('example_densemap2.mat');
-
-addpath('C:\Users\Administrator\Desktop\Machine Learnning\INF552\HW1');
 
 %% populate ei with the network architecture
 ei = [];
@@ -44,34 +44,35 @@ sensor.range = 5;         % Meters
 x = [-20; -6; 0];
 
 % line functions in map
-[k_map, b_map] = LineFunctions_in_Map(wp);
+[k_map, b_map] = line_functions_in_map(wp);
 
 %% Simulator
 for t = 1 : numSteps
     % line functions of sensor
-    [k, b] = LineFunctions_Sensor(x, sensor);
+    [k, b] = line_functions_sensor(x, sensor);
 
     % compute 4 distances
-    distance = DistanceComputation(x, sensor, wp, k_map, b_map, k, b);
+    distance = computeDistance(x, sensor, wp, k_map, b_map, k, b);
 
-    % predict next motion according to prediction made by MultiLayer_BP 
-    [~, ~, ~, pred] = Backpropagation(opt_params, ei, distance, [], true);
+    % predict next motion according to prediction made by
+    % multilayer_neural_network
+    [~, ~, ~, pred] = backpropagation(opt_weights, ei, distance, [], true);
     pred = round(3 * pred);
     
     if pred == 0
-       u = [0; -1; 0]; x = Odometry(x, u); % u is control vector, u(1) is rot1
+       u = [0; -1; 0]; x = odometry(x, u); % u is control vector, u(1) is rot1
        legend(sprintf('Move Forward'))    % u(2) is trans, u(3) is rot2
        
     elseif pred == 1
-       u = [-pi/24; -0.7; -pi/24]; x = Odometry(x, u); 
+       u = [-pi/24; -0.7; -pi/24]; x = odometry(x, u); 
        legend(sprintf('Slight Right'))
        
     elseif pred == 2
-       u = [-pi/24; -0.3; -pi/24]; x = Odometry(x, u);
+       u = [-pi/24; -0.3; -pi/24]; x = odometry(x, u);
        legend(sprintf('Sharp Right'))
        
     elseif pred == 3
-       u = [pi/12; -0.5; pi/12]; x = Odometry(x, u);
+       u = [pi/12; -0.5; pi/12]; x = odometry(x, u);
        legend(sprintf('Slight Left'))
     end
 
@@ -79,8 +80,8 @@ for t = 1 : numSteps
     cla;
     plot(wp(1,:),wp(2,:), 'k', wp(1,:),wp(2,:),'k.')
     line([wp(1,1) wp(1,end)], [wp(2,1) wp(2,end)], 'color', 'k')
-    DrawRobot(x, [0 1]);
-    DrawSector(x, sensor);
+    drawRobot(x, [0 1]);
+    drawSector(x, sensor);
     drawnow;
 
 end

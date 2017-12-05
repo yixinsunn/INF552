@@ -1,4 +1,4 @@
-function distance = DistanceComputation(x, sensor, map, k_map, b_map, k, b)
+function distance = computeDistance(x, sensor, map, k_map, b_map, k, b)
 % computes 4 distances, distance = [front; left; right; back]
 %
 % in every variable name, '1','2', '3' corresponds to intersections with 
@@ -80,7 +80,7 @@ for i = 1:numLines
 end     
 
 %% --------------------compute front distance--------------------%%
-SolutionSet = [];
+solutionSet = [];
 
 for i = 1:numLines
     % first, compute the intersection with right line
@@ -89,12 +89,12 @@ for i = 1:numLines
         
         % transform the intersection from world frame to local frame
         p = [m{i}(1,1); n{i}(1,1)];
-        p_local = World2Local(x, p);
+        p_local = world2local(x, p);
         px = p_local(1); py = p_local(2);
             
         % whether the intersection is in the zone of sensor?
         if (px > 0 && px <= r_s && py > 0 && py <= r_c)
-            SolutionSet = [SolutionSet, p];
+            solutionSet = [solutionSet, p];
         end
     end
    
@@ -102,11 +102,11 @@ for i = 1:numLines
     if (sol{i}(1) >= minX(i) && sol{i}(1) <= maxX(i) && ...
             sol{i}(2) >= minY(i) && sol{i}(2) <= maxY(i))
         
-        p_local = World2Local(x, sol{i});
+        p_local = world2local(x, sol{i});
         px = p_local(1); py = p_local(2);
          
         if (px < r_s && px > -r_s && py > r_c && py <= r)
-            SolutionSet = [SolutionSet, sol{i}];
+            solutionSet = [solutionSet, sol{i}];
         end
     end
     
@@ -116,24 +116,24 @@ for i = 1:numLines
         
         % transform the intersection from world frame to local frame
         p = [m{i}(1,2); n{i}(1,2)];
-        p_local = World2Local(x, p);
+        p_local = world2local(x, p);
         px = p_local(1); py = p_local(2);
               
         if (px < 0 && px >= -r_s && py > 0 && py <= r_c)
-            SolutionSet = [SolutionSet, p];
+            solutionSet = [solutionSet, p];
         end
     end
 end
     
-if isempty(SolutionSet)
+if isempty(solutionSet)
     distance(1) = 1;
 else
-    numSolutions = size(SolutionSet, 2);
-    distance(1)= sqrt(min(sum((SolutionSet - repmat(x(1:2),1,numSolutions)).^2)));
+    numSolutions = size(solutionSet, 2);
+    distance(1)= sqrt(min(sum((solutionSet - repmat(x(1:2),1,numSolutions)).^2)));
 end
 
 %% --------------------compute back distance--------------------%%
-SolutionSet = [];
+solutionSet = [];
 
 for i = 1:numLines
     if (m{i}(2,1) >= minX(i) && m{i}(2,1) <= maxX(i) && ...
@@ -141,23 +141,23 @@ for i = 1:numLines
         
         % transform the intersection from world frame to local frame
         p = [m{i}(2,1); n{i}(2,1)];
-        p_local = World2Local(x, p);
+        p_local = world2local(x, p);
         px = p_local(1); py = p_local(2);
       
         % whether the intersection is in the zone of sensor?
         if (px < 0 && px >= -r_s && py < 0 && py >= -r_c)
-            SolutionSet = [SolutionSet, p];
+            solutionSet = [solutionSet, p];
         end
     end
     
     if (sol{i}(1) >= minX(i) && sol{i}(1) <= maxX(i) && ...
             sol{i}(2) >= minY(i) && sol{i}(2) <= maxY(i))
         
-        p_local = World2Local(x, sol{i});
+        p_local = world2local(x, sol{i});
         px = p_local(1); py = p_local(2);
          
         if (px < r_s && px > -r_s && py < r_c && py >= -r)
-            SolutionSet = [SolutionSet, sol{i}];
+            solutionSet = [solutionSet, sol{i}];
         end
     end
     
@@ -165,46 +165,46 @@ for i = 1:numLines
             n{i}(2,2) >= minY(i) && n{i}(2,2) <= maxY(i))
         
         p = [m{i}(2,2); n{i}(2,2)];
-        p_local = World2Local(x, p);
+        p_local = world2local(x, p);
         px = p_local(1); py = p_local(2);
         
         if (px > 0 && px <= r_s && py < 0 && py >= -r_c)
-            SolutionSet = [SolutionSet, p];
+            solutionSet = [solutionSet, p];
         end
     end
 end
 
-if isempty(SolutionSet)
+if isempty(solutionSet)
     distance(4) = 0.5;
 else
-    numSolutions = size(SolutionSet, 2);
-    distance(4)= sqrt(min(sum((SolutionSet - repmat(x(1:2),1,numSolutions)).^2)));
+    numSolutions = size(solutionSet, 2);
+    distance(4)= sqrt(min(sum((solutionSet - repmat(x(1:2),1,numSolutions)).^2)));
 end
 
 %% --------------------compute left distance--------------------%%
-SolutionSet = [];
+solutionSet = [];
 
 for i = 1:numLines    
     if (m{i}(3,1) >= minX(i) && m{i}(3,1) <= maxX(i) && ...
             n{i}(3,1) >= minY(i) && n{i}(3,1) <= maxY(i))
         
         p = [m{i}(3,1); n{i}(3,1)];
-        p_local = World2Local(x, p);
+        p_local = world2local(x, p);
         px = p_local(1); py = p_local(2);
                
         if (px < 0 && px >= -r_c && py > 0 && py <= r_s)
-            SolutionSet = [SolutionSet, p];
+            solutionSet = [solutionSet, p];
         end
     end
     
     if (sol{i}(1) >= minX(i) && sol{i}(1) <= maxX(i) && ...
             sol{i}(2) >= minY(i) && sol{i}(2) <= maxY(i))
         
-        p_local = World2Local(x, sol{i});
+        p_local = world2local(x, sol{i});
         px = p_local(1); py = p_local(2);
          
         if (px < -r_c && px >= -r && py < r_s && py > -r_s)
-            SolutionSet = [SolutionSet, sol{i}];
+            solutionSet = [solutionSet, sol{i}];
         end
     end
        
@@ -212,46 +212,46 @@ for i = 1:numLines
             n{i}(3,2) >= minY(i) && n{i}(3,2) <= maxY(i))
         
         p = [m{i}(3,2); n{i}(3,2)];
-        p_local = World2Local(x, p);
+        p_local = world2local(x, p);
         px = p_local(1); py = p_local(2);
         
         if (px < 0 && px >= -r_c && py < 0 && py >= r_s)
-            SolutionSet = [SolutionSet, p];
+            solutionSet = [solutionSet, p];
         end
     end
 end
 
-if isempty(SolutionSet)
+if isempty(solutionSet)
     distance(2) = 0.5;
 else
-    numSolutions = size(SolutionSet, 2);
-    distance(2)= sqrt(min(sum((SolutionSet - repmat(x(1:2),1,numSolutions)).^2)));
+    numSolutions = size(solutionSet, 2);
+    distance(2)= sqrt(min(sum((solutionSet - repmat(x(1:2),1,numSolutions)).^2)));
 end
 
 %% --------------------compute right distance--------------------%%
-SolutionSet = [];
+solutionSet = [];
 
 for i = 1:numLines  
     if (m{i}(4,1) >= minX(i) && m{i}(4,1) <= maxX(i) && ...
             n{i}(4,1) >= minY(i) && n{i}(4,1) <= maxY(i))
         
         p = [m{i}(4,1); n{i}(4,1)];
-        p_local = World2Local(x, p);
+        p_local = world2local(x, p);
         px = p_local(1); py = p_local(2);
           
         if (px > 0 && px <= r_c && py < 0 && py >= -r_s)
-            SolutionSet = [SolutionSet, p];
+            solutionSet = [solutionSet, p];
         end
     end
     
     if (sol{i}(1) >= minX(i) && sol{i}(1) <= maxX(i) && ...
             sol{i}(2) >= minY(i) && sol{i}(2) <= maxY(i))
         
-        p_local = World2Local(x, sol{i});
+        p_local = world2local(x, sol{i});
         px = p_local(1); py = p_local(2);
          
         if (px <= r && px > r_c && py < r_s && py > -r_s)
-            SolutionSet = [SolutionSet, sol{i}];
+            solutionSet = [solutionSet, sol{i}];
         end
     end
         
@@ -259,20 +259,20 @@ for i = 1:numLines
             n{i}(4,2) >= minY(i) && n{i}(4,2) <= maxY(i))
         
         p = [m{i}(4,2); n{i}(4,2)];
-        p_local = World2Local(x, p);
+        p_local = world2local(x, p);
         px = p_local(1); py = p_local(2);
         
         if (px > 0 && px <= r_c && py > 0 && py <= r_s)
-            SolutionSet = [SolutionSet, p];
+            solutionSet = [solutionSet, p];
         end
     end
 end
 
-if isempty(SolutionSet)
+if isempty(solutionSet)
     distance(3) = 3;
 else
-    numSolutions = size(SolutionSet, 2);
-    distance(3)= sqrt(min(sum((SolutionSet - repmat(x(1:2),1,numSolutions)).^2)));
+    numSolutions = size(solutionSet, 2);
+    distance(3)= sqrt(min(sum((solutionSet - repmat(x(1:2),1,numSolutions)).^2)));
 end
 
 end

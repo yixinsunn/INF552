@@ -1,4 +1,4 @@
-function [K, B] = LineFunctions_in_Map(points)
+function [K, B] = line_functions_in_map(points)
 % obtains line functions between 2 points in map
 
 K = [];

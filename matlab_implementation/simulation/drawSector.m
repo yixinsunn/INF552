@@ -1,4 +1,4 @@
-function DrawSector(x, sensor)
+function drawSector(x, sensor)
 
 % (x0,y0) is the origin of the sector, (angle1,angle2) is the angle
 % r is the radius

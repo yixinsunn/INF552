@@ -1,4 +1,4 @@
-function x = Odometry(x, u)
+function x = odometry(x, u)
 
 rot1 = u(1);
 trans = u(2);

@@ -1,4 +1,4 @@
-function [k, b] = LineFunctions_Sensor(x, sensor)
+function [k, b] = line_functions_sensor(x, sensor)
 % obtain 8 line functions given by sensor
 % p1_front_local represents the right line at front, in local frame
 % p1_front       represents the right line at front, in world frame
@@ -26,11 +26,11 @@ p1_front_local = [r_s; r_c]; p2_front_local = [-r_s; r_c];
 p1_left_local = [-r_c; r_s]; p2_left_local = [-r_c; -r_s];
 
 % transform the two points to world frame
-p1_front = Local2World(x, p1_front_local);
-p2_front = Local2World(x, p2_front_local);
+p1_front = local2world(x, p1_front_local);
+p2_front = local2world(x, p2_front_local);
 
-p1_left = Local2World(x, p1_left_local);
-p2_left = Local2World(x, p2_left_local);
+p1_left = local2world(x, p1_left_local);
+p2_left = local2world(x, p2_left_local);
 
 % obtain the parameters for the three lines
 params = [p1_front(1) 1; x(1) 1] \ [p1_front(2); x(2)];

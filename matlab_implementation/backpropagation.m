@@ -1,4 +1,4 @@
-function [opt_params, cost, grad, pred] = Backpropagation(theta, ei, data, labels, pred_only)
+function [opt_theta, cost, grad, pred] = backpropagation(theta, ei, data, labels, pred_only)
 % does all the work of cost / gradient computation
 % returns squared-error cost, weight norm, and prox reg
 
@@ -34,7 +34,7 @@ if po
     pred = hAct{numLayers}.outputs;
     cost = 0;
     grad = [];
-    opt_params = theta;
+    opt_theta = theta;
     return;
 end
 
@@ -84,7 +84,7 @@ end
 
 %% reshape gradients and optimal parameters into vector
 [grad] = stack2params(gradStack);
-opt_params = stack2params(stack);
+opt_theta = stack2params(stack);
 
 %% compute final outputs as the prediction
 for l = 1:numLayers

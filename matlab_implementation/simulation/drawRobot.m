@@ -1,6 +1,6 @@
-function DrawRobot(x, forwards)
+function drawRobot(x, forwards)
 
-ShiftAngel = atan2(forwards(2), forwards(1));
+shiftAngel = atan2(forwards(2), forwards(1));
 
 p = 0.02;    % percentage of axes size
 a = axis;
@@ -9,9 +9,9 @@ l2 = (a(4) - a(3)) * p;
 
 triangle = [1 1 -2 1; 1 -1 0 1];  % basic triangle
 
-theta = x(3) - pi/2 + ShiftAngel;    % rotate to point along x axis
-Rotation = [cos(theta) -sin(theta); sin(theta) cos(theta)];
-triangle = Rotation * triangle;      % rotate the triangle by theta
+theta = x(3) - pi/2 + shiftAngel;    % rotate to point along x axis
+rotation = [cos(theta) -sin(theta); sin(theta) cos(theta)];
+triangle = rotation * triangle;      % rotate the triangle by theta
 
 triangle(1,:) = triangle(1,:) * l1 + x(1);  % scale and shift to x, y
 triangle(2,:) = triangle(2,:) * l2 + x(2);
