@@ -34,7 +34,7 @@ cost = 1;       % initialize the value of cost function
 epochs = 0;
 hold on
 while (cost > 0.01)
-[weights, cost, grad, ~] = Backpropagation(weights, ei, X_train, y_train, false);
+[weights, cost, grad, ~] = backpropagation(weights, ei, X_train, y_train, false);
 epochs = epochs + 1;
 plot(epochs, cost, 'b.')
 end
